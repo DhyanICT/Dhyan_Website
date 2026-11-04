@@ -30,6 +30,11 @@ document.addEventListener('keydown', event => { if (event.key === 'Escape') clos
 document.addEventListener('click', event => { if (!event.target.closest('.site-header')) closeMenu(); });
 window.matchMedia('(min-width: 761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
+// Reveal all content for printing and captures that never scroll the page.
+const showAll = () => $$('.reveal').forEach(element => element.classList.add('visible'));
+window.addEventListener('beforeprint', showAll);
+setTimeout(showAll, 4000);
+
 if ('IntersectionObserver' in window) {
   document.documentElement.classList.add('motion-ready');
   const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {

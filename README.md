@@ -43,4 +43,6 @@ Semantic sections, keyboard focus indicators, a skip link, native modal focus ha
 
 ## Fonts
 
-Self-hosted Manrope and DM Mono, licensed under the SIL Open Font License. License texts are in `src/assets/`.
+Self-hosted variable Manrope, DM Mono, and Instrument Serif in WOFF2 format, licensed under the SIL Open Font License. License texts are in `src/assets/`.
+
+November 2026 content refresh: the user confirmed the title Software Development Intern and supplied the updated SportX1 responsibilities and 88 merged PRs. Earlier roles were tightened without changing their dates. TrustMed’s card labels the 87.5% Recall@15 metric as a seven-query baseline. Font payloads total about 83 KB, including regular and italic display serif. Scroll reveals fall back after four seconds and are forced visible for print.
