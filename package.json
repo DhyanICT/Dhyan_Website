@@ -1,0 +1,14 @@
+{
+  "name": "dhyan-patel-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dhyan Patel's applied AI and full-stack engineering portfolio",
+  "scripts": {
+    "dev": "node scripts/serve.mjs src",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs dist",
+    "check": "node --check src/main.js && node --check scripts/build.mjs && node scripts/check.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

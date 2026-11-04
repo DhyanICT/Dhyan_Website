@@ -1,0 +1,11 @@
+import { readFile, access } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const html = await readFile(new URL('../src/index.html',import.meta.url),'utf8');
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
+assert.equal(ids.length,new Set(ids).size,'HTML IDs must be unique');
+for(const match of html.matchAll(/href="#([^"]+)"/g)) assert.ok(ids.includes(match[1]),`Missing anchor ${match[1]}`);
+for(const match of html.matchAll(/(?:href|src)="\.\/([^"#]+)"/g)) await access(new URL(`../src/${match[1]}`,import.meta.url));
+assert.ok(html.includes('mailto:dhyanpatel2632003@gmail.com'),'Expected contact email');
+assert.ok(!/tel:|856.?493|dpate337@asu/i.test(html),'Private contacts must not be published');
+assert.ok(!/<img\b/i.test(html),'Portfolio uses original graphics rather than a portrait');
+console.log('Verified local assets, anchor targets, unique IDs, and contact requirements.');
