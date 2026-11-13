@@ -1,6 +1,6 @@
 # Dhyan Patel — Portfolio
 
-A responsive personal portfolio for applied AI and full-stack engineering. Original generative canvas artwork, subtle scroll reveals, dark/light themes, project filtering, accessible project dialogs, and a downloadable public resume. No portrait, phone number, analytics, or third-party runtime requests.
+A responsive personal portfolio for applied AI and full-stack engineering with an interactive canvas sphere, a binary portrait, dark/light themes, project filtering, and a public resume.
 
 ## Run locally
 

@@ -101,3 +101,28 @@
   white-space: nowrap;
   border: 0;
 }
+
+.about-intro {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+}
+.binary-portrait {
+  width: min(100%, 390px);
+  margin: 0;
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 53%, #8ec95c14, transparent 68%);
+}
+.binary-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mask-image: linear-gradient(#000 76%, transparent 100%);
+}
+[data-theme="light"] .binary-portrait {
+  background: radial-gradient(ellipse at 50% 53%, #2b3f23, #101710 78%);
+}
+@media (max-width: 760px) {
+  .about-intro { gap: 18px; }
+  .binary-portrait { width: min(100%, 330px); }
+}

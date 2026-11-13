@@ -9,5 +9,4 @@ for(const match of html.matchAll(/(?:href|src)="\.\/([^"#]+)"/g)) await access(n
 for(const match of css.matchAll(/url\(['"]?\.\/([^'"\)]+)['"]?\)/g)) await access(new URL(`../src/${match[1]}`,import.meta.url));
 assert.ok(html.includes('mailto:dhyanpatel2632003@gmail.com'),'Expected contact email');
 assert.ok(!/tel:|856.?493|dpate337@asu/i.test(html),'Private contacts must not be published');
-assert.ok(!/<img\b/i.test(html),'Portfolio uses original graphics rather than a portrait');
 console.log('Verified local assets, anchor targets, unique IDs, and contact requirements.');
