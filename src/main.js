@@ -119,11 +119,15 @@ $('.copy-email').addEventListener('click', async () => {
   toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 });
 
-// A lightweight, original generative sculpture. No WebGL or animation libraries.
+// Project the sphere in 3D, with a persistent drag orientation and a temporary hover offset.
 const canvas = $('#network-orb');
 const ctx = canvas.getContext('2d');
-let orbWidth = 0, orbHeight = 0, rotation = .5, lastFrame = 0, frameId = 0;
+let orbWidth = 0, orbHeight = 0, lastFrame = 0, frameId = 0;
 let orbVisible = true;
+let yaw = .5, pitch = .22;
+let hoverYaw = 0, hoverPitch = 0, targetYaw = 0, targetPitch = 0;
+let drag = null;
+const limitPitch = angle => Math.max(-1.35, Math.min(1.35, angle));
 const points = [];
 const pointCount = 390;
 for (let i = 0; i < pointCount; i++) {
@@ -150,11 +154,15 @@ function renderOrb() {
   const dark = document.documentElement.dataset.theme !== 'light';
   const rgb = dark ? '184,227,142' : '74,110,45';
   const radius = Math.min(orbWidth * .40, orbHeight * .405);
+  const angleX = yaw + hoverYaw;
+  const angleY = limitPitch(pitch + hoverPitch);
+  const cosYaw = Math.cos(angleX), sinYaw = Math.sin(angleX);
+  const cosPitch = Math.cos(angleY), sinPitch = Math.sin(angleY);
   const projected = points.map(p => {
-    const x = p.x * Math.cos(rotation) + p.z * Math.sin(rotation);
-    const z = -p.x * Math.sin(rotation) + p.z * Math.cos(rotation);
-    const y = p.y * Math.cos(.22) - z * Math.sin(.22);
-    const depth = p.y * Math.sin(.22) + z * Math.cos(.22);
+    const x = p.x * cosYaw + p.z * sinYaw;
+    const z = -p.x * sinYaw + p.z * cosYaw;
+    const y = p.y * cosPitch - z * sinPitch;
+    const depth = p.y * sinPitch + z * cosPitch;
     const perspective = 3.8 / (3.8 - depth);
     return { x:orbWidth*.51+x*radius*perspective, y:orbHeight*.49+y*radius*perspective, z:depth };
   });
@@ -177,12 +185,113 @@ function renderOrb() {
 function animateOrb(time) {
   frameId = 0;
   if (!orbVisible || document.hidden || reducedMotion.matches) return;
-  if (time-lastFrame>32) { rotation += .0018; renderOrb(); lastFrame=time; }
-  frameId=requestAnimationFrame(animateOrb);
+  const elapsed = time - lastFrame;
+  const moving = drag || Math.abs(targetYaw - hoverYaw) + Math.abs(targetPitch - hoverPitch) > .002;
+  if (moving || elapsed >= 30) {
+    const seconds = lastFrame ? Math.min(elapsed / 1000, .05) : 0;
+    const blend = 1 - Math.exp(-12 * seconds);
+    hoverYaw += (targetYaw - hoverYaw) * blend;
+    hoverPitch += (targetPitch - hoverPitch) * blend;
+    if (!drag) yaw += .055 * seconds;
+    renderOrb();
+    lastFrame = time;
+  }
+  frameId = requestAnimationFrame(animateOrb);
 }
-function startOrb() { if (!frameId && orbVisible && !document.hidden && !reducedMotion.matches) frameId=requestAnimationFrame(animateOrb); }
-if ('ResizeObserver' in window) new ResizeObserver(sizeOrb).observe(canvas); else window.addEventListener('resize',sizeOrb);
-if ('IntersectionObserver' in window) new IntersectionObserver(entries=>{orbVisible=entries[0].isIntersecting;if(orbVisible)startOrb();else{cancelAnimationFrame(frameId);frameId=0;}},{rootMargin:'100px'}).observe(canvas);
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frameId);frameId=0;}else startOrb();});
-reducedMotion.addEventListener('change',()=>{cancelAnimationFrame(frameId);frameId=0;renderOrb();startOrb();});
-sizeOrb();startOrb();
+
+function startOrb() {
+  if (!frameId && orbVisible && !document.hidden && !reducedMotion.matches) {
+    frameId = requestAnimationFrame(animateOrb);
+  }
+}
+
+function stopOrb() {
+  cancelAnimationFrame(frameId);
+  frameId = 0;
+  lastFrame = 0;
+}
+
+function clearHover() {
+  targetYaw = 0;
+  targetPitch = 0;
+}
+
+function keepCurrentOrientation() {
+  yaw += hoverYaw;
+  pitch = limitPitch(pitch + hoverPitch);
+  hoverYaw = 0;
+  hoverPitch = 0;
+  clearHover();
+}
+
+canvas.addEventListener('pointermove', event => {
+  if (drag?.id === event.pointerId) {
+    yaw += (event.clientX - drag.x) * .009;
+    pitch = limitPitch(pitch + (event.clientY - drag.y) * .009);
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+    if (reducedMotion.matches) renderOrb();
+    return;
+  }
+  if (drag || event.pointerType === 'touch' || reducedMotion.matches) return;
+  const bounds = canvas.getBoundingClientRect();
+  targetYaw = ((event.clientX - bounds.left) / bounds.width - .5) * 1.65;
+  targetPitch = ((event.clientY - bounds.top) / bounds.height - .5) * 1.15;
+});
+canvas.addEventListener('pointerleave', clearHover);
+
+canvas.addEventListener('pointerdown', event => {
+  if (!event.isPrimary || event.button !== 0 || drag) return;
+  keepCurrentOrientation();
+  drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  canvas.setPointerCapture(event.pointerId);
+  canvas.classList.add('is-dragging');
+});
+
+function endDrag(event) {
+  if (drag?.id !== event.pointerId) return;
+  drag = null;
+  canvas.classList.remove('is-dragging');
+}
+canvas.addEventListener('pointerup', endDrag);
+canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('lostpointercapture', endDrag);
+
+const keyTurns = {
+  ArrowLeft: [-.18, 0], ArrowRight: [.18, 0],
+  ArrowUp: [0, -.18], ArrowDown: [0, .18]
+};
+canvas.addEventListener('keydown', event => {
+  const turn = keyTurns[event.key];
+  if (!turn) return;
+  event.preventDefault();
+  keepCurrentOrientation();
+  yaw += turn[0];
+  pitch = limitPitch(pitch + turn[1]);
+  renderOrb();
+});
+
+if ('ResizeObserver' in window) {
+  new ResizeObserver(sizeOrb).observe(canvas);
+} else {
+  window.addEventListener('resize', sizeOrb);
+}
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(([entry]) => {
+    orbVisible = entry.isIntersecting;
+    if (orbVisible) startOrb();
+    else stopOrb();
+  }, { rootMargin: '100px' }).observe(canvas);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopOrb();
+  else startOrb();
+});
+reducedMotion.addEventListener('change', () => {
+  stopOrb();
+  keepCurrentOrientation();
+  renderOrb();
+  startOrb();
+});
+sizeOrb();
+startOrb();
