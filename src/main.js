@@ -111,6 +111,32 @@ dialog.addEventListener('click', event => {
   const rect = dialog.getBoundingClientRect();
   if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
 });
+
+const resumeDialog = $('#resume-preview-dialog');
+const resumeLink = $('[data-resume-preview]');
+const resumePage = $('.resume-dialog-page', resumeDialog);
+const zoomButton = $('.resume-zoom', resumeDialog);
+resumeLink.addEventListener('click', event => {
+  if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || !resumeDialog.showModal) return;
+  event.preventDefault();
+  resumeDialog.showModal();
+});
+resumeLink.setAttribute('aria-haspopup', 'dialog');
+
+function setResumeZoom(zoomed) {
+  zoomButton.setAttribute('aria-pressed', String(zoomed));
+  zoomButton.textContent = zoomed ? 'Fit to width' : 'Zoom in';
+  resumePage.classList.toggle('is-zoomed', zoomed);
+}
+zoomButton.addEventListener('click', () => {
+  setResumeZoom(zoomButton.getAttribute('aria-pressed') === 'false');
+});
+resumeDialog.addEventListener('close', () => {
+  setResumeZoom(false);
+  resumePage.scrollTo(0, 0);
+  resumeLink.focus({ preventScroll: true });
+});
+
 let toastTimer;
 $('.copy-email').addEventListener('click', async () => {
   const toast = $('.toast');

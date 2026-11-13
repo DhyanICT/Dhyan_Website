@@ -23,7 +23,7 @@ npm run preview
 - `src/index.html`: profile, experience, toolkit, project summaries, contact links.
 - `src/main.js`: project stories and interactions, including the original canvas sculpture.
 - `src/styles.css`: responsive layouts and theme tokens.
-- `src/assets/Dhyan_Patel_Resume.pdf`: public resume; the contact header contains only the requested Gmail address and LinkedIn.
+- `src/assets/Dhyan_Patel_Resume.pdf`: public resume with the requested Gmail address and LinkedIn in the contact header. Regenerate `src/assets/resume-preview.webp` from the public PDF after replacing it.
 
 The original resume stays outside this repository. Do not replace the public copy with a version containing a phone number. All visible email links use `dhyanpatel2632003@gmail.com`.
 
