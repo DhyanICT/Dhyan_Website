@@ -87,7 +87,7 @@ const projectDetails = {
     intro: 'A small shared workspace for decisions that deserve a visible rationale. Frame the question, add options and evidence, cast one editable vote, and record an outcome.',
     metrics: [['Live', 'presence & sync'], ['1 vote', 'per person per board'], ['Explicit', 'recorded outcomes']],
     contribution: 'The implementation uses DeepSpace authentication, collections, live synchronization, and per-board presence. Server-side voter identity and a unique board/user pair enforce one ballot per person. Writes are confirmed before the interface reports success.',
-    note: 'Built with an AI coding agent under my direction. Board content requires sign-in. The portfolio illustration is a concept view; the live app and repository show the actual implementation.',
+    note: 'Built with an AI coding agent under my direction. The screenshot shows the public decision example. Shared boards require sign-in.',
     url: 'https://github.com/DhyanICT/deepspace_proofboard', live: 'https://proofboard-dhyan.app.space', label: 'Explore the source'
   },
   taskboard: {
@@ -95,7 +95,7 @@ const projectDetails = {
     intro: 'A focused Kanban board built with Next.js, TypeScript, Tailwind CSS, and Supabase. It supports anonymous guest sessions, persisted tasks, and drag-and-drop between four workflow columns.',
     metrics: [['4', 'workflow columns'], ['RLS', 'per-user isolation'], ['Guest', 'authentication']],
     contribution: 'The product brings together task creation, priorities, due dates, search, and filtering. Supabase row-level security limits each guest to their own tasks, while loading, empty, and error states keep the interface understandable.',
-    note: 'The portfolio illustration is a concept view. Open the live app to explore the implemented board.',
+    note: 'The screenshot shows the original Task Board interface running locally with sample tasks.',
     url: 'https://github.com/DhyanICT/Task_Board_NextPlay', live: 'https://taskboard-gamma-ten.vercel.app/', label: 'Explore the source'
   }
 };
