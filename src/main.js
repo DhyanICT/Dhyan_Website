@@ -87,7 +87,7 @@ const projectDetails = {
     intro: 'A small shared workspace for decisions that deserve a visible rationale. Frame the question, add options and evidence, cast one editable vote, and record an outcome.',
     metrics: [['Live', 'presence & sync'], ['1 vote', 'per person per board'], ['Explicit', 'recorded outcomes']],
     contribution: 'The implementation uses DeepSpace authentication, collections, live synchronization, and per-board presence. Server-side voter identity and a unique board/user pair enforce one ballot per person. Writes are confirmed before the interface reports success.',
-    note: 'Built with an AI coding agent under my direction. The screenshot shows the public decision example. Shared boards require sign-in.',
+    note: 'Built with an AI coding agent under my direction. Shared boards require sign-in.',
     url: 'https://github.com/DhyanICT/deepspace_proofboard', live: 'https://proofboard-dhyan.app.space', label: 'Explore the source'
   },
   taskboard: {
@@ -95,7 +95,6 @@ const projectDetails = {
     intro: 'A focused Kanban board built with Next.js, TypeScript, Tailwind CSS, and Supabase. It supports anonymous guest sessions, persisted tasks, and drag-and-drop between four workflow columns.',
     metrics: [['4', 'workflow columns'], ['RLS', 'per-user isolation'], ['Guest', 'authentication']],
     contribution: 'The product brings together task creation, priorities, due dates, search, and filtering. Supabase row-level security limits each guest to their own tasks, while loading, empty, and error states keep the interface understandable.',
-    note: 'The screenshot shows the original Task Board interface running locally with sample tasks.',
     url: 'https://github.com/DhyanICT/Task_Board_NextPlay', live: 'https://taskboard-gamma-ten.vercel.app/', label: 'Explore the source'
   }
 };
@@ -103,7 +102,7 @@ const dialog = $('.project-dialog');
 $$('.project-detail').forEach(button => button.addEventListener('click', () => {
   const project = projectDetails[button.dataset.project];
   // Content is a fixed, local editorial data set; no user or network HTML is injected.
-  $('#dialog-content').innerHTML = `<h2 id="dialog-title">${project.title}</h2><p>${project.intro}</p><div class="dialog-metrics">${project.metrics.map(([value, label]) => `<div><b>${value}</b><span>${label}</span></div>`).join('')}</div><h3>The engineering</h3><p>${project.contribution}</p><p class="dialog-note">${project.note}</p><a class="button button-primary" href="${project.url}" target="_blank" rel="noopener noreferrer">${project.label} ↗</a>${project.live ? `<p><a class="text-link" href="${project.live}" target="_blank" rel="noopener noreferrer">Open live app ↗</a></p>` : ''}`;
+  $('#dialog-content').innerHTML = `<h2 id="dialog-title">${project.title}</h2><p>${project.intro}</p><div class="dialog-metrics">${project.metrics.map(([value, label]) => `<div><b>${value}</b><span>${label}</span></div>`).join('')}</div><h3>The engineering</h3><p>${project.contribution}</p>${project.note ? `<p class="dialog-note">${project.note}</p>` : ""}<a class="button button-primary" href="${project.url}" target="_blank" rel="noopener noreferrer">${project.label} ↗</a>${project.live ? `<p><a class="text-link" href="${project.live}" target="_blank" rel="noopener noreferrer">Open live app ↗</a></p>` : ''}`;
   dialog.showModal();
 }));
 $('.dialog-close').addEventListener('click', () => dialog.close());
